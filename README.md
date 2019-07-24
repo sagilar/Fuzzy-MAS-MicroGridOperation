@@ -16,5 +16,3 @@ The Java project has 6 packages:
 ## Remarks
 If you use this project as a base for your project, please do the respective referenciation.  
 **Most of the code and interfaces are in Spanish. Please contact me for help.**
-
-

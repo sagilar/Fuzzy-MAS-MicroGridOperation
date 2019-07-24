@@ -1,0 +1,46 @@
+[System]
+Name='FISSMA'
+Type='mamdani'
+Version=2.0
+NumInputs=2
+NumOutputs=1
+NumRules=9
+AndMethod='min'
+OrMethod='max'
+ImpMethod='min'
+AggMethod='max'
+DefuzzMethod='centroid'
+
+[Input1]
+Name='potenciadisponible'
+Range=[0 600]
+NumMFs=3
+MF1='baja':'trapmf',[-216 -24 100 200]
+MF2='media':'trapmf',[100 200 320 420]
+MF3='alto':'trapmf',[320 420 600 816]
+
+[Input2]
+Name='precio'
+Range=[0 15]
+NumMFs=3
+MF1='bajo':'trapmf',[-5.46 -0.675 1 2]
+MF2='medio':'trapmf',[1 2 3 3.5]
+MF3='alto':'trapmf',[3 3.5 25 30]
+
+[Output1]
+Name='operacionexterna'
+Range=[0 1]
+NumMFs=2
+MF1='completo':'trapmf',[-0.36 -0.04 0.4 0.6]
+MF2='parcial':'trapmf',[0.4 0.6 1 1.2]
+
+[Rules]
+1 1, 1 (1) : 1
+2 1, 1 (1) : 1
+3 1, 2 (1) : 1
+1 2, 1 (1) : 1
+2 2, 2 (1) : 1
+3 2, 2 (1) : 1
+1 3, 1 (1) : 1
+2 3, 2 (1) : 1
+3 3, 2 (1) : 1

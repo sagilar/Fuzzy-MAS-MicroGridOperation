@@ -1,0 +1,112 @@
+FUNCTION_BLOCK negative_relation	// Block definition (there may be more than one block per file)
+
+// Define input variables
+VAR_INPUT				
+	available_power : REAL;
+	price : REAL;
+END_VAR
+
+// Define output variable
+VAR_OUTPUT				
+	external_operation : REAL;
+END_VAR
+
+// Fuzzify input variable 'potenciadisponible': {'bajo', 'medio' , 'alto'}
+FUZZIFY available_power			
+	TERM low := (0, 1) (100, 1) (200,0) ; 
+	TERM medium := (100, 0) (200,1) (320,1) (420,0);
+	TERM high := (320, 0) (420, 1) (800,1);
+END_FUZZIFY
+
+// Fuzzify input variable 'precio': { 'bajo', 'medio','alto' }
+FUZZIFY price			
+	TERM low := (0, 1) (1, 1) (2,0) ;
+	TERM medium := (1,0) (2,1) (3,1) (3.5,0);
+        TERM high := (3,0) (3.5,1)(30,1);
+END_FUZZIFY
+
+// Defzzzify output variable 'operacionexterna' : {'completo', 'parcial' }
+DEFUZZIFY external_operation			
+	TERM complete := (0,1) (0.4,1) (0.6,0);
+	TERM partial := (0.4,0) (0.6,1) (1,1);
+	
+	METHOD : COG;		// Use 'Center Of Gravity' defuzzification method
+	DEFAULT := 0;		// Default value is 0 (if no rule activates defuzzifier)
+END_DEFUZZIFY
+
+// Inference rules
+RULEBLOCK No1
+	AND : MIN;	// Use 'min' for 'and'
+	ACT : MIN;	// Use 'min' activation method
+	ACCU : MAX;	// Use 'max' accumulation method
+
+	RULE 1 : IF available_power IS low AND price IS low THEN external_operation IS complete;
+	RULE 2 : IF available_power IS medium AND price IS low THEN external_operation IS complete;
+	RULE 3 : IF available_power IS high AND price IS low THEN external_operation IS partial;
+        RULE 4 : IF available_power IS low AND price IS medium THEN external_operation IS complete;
+        RULE 5 : IF available_power IS medium AND price IS medium THEN external_operation IS partial;
+        RULE 6 : IF available_power IS high AND price IS medium THEN external_operation IS partial;
+        RULE 7 : IF available_power IS low AND price IS high THEN external_operation IS complete;
+        RULE 8 : IF available_power IS medium AND price IS high THEN external_operation IS partial;
+        RULE 9 : IF available_power IS high AND price IS high THEN external_operation IS partial; 
+
+END_RULEBLOCK
+
+END_FUNCTION_BLOCK
+
+
+FUNCTION_BLOCK positive_relation	// Block definition (there may be more than one block per file)
+
+// Define input variables
+VAR_INPUT				
+	stored_energy : REAL;
+	price : REAL;
+END_VAR
+
+// Define output variable
+VAR_OUTPUT				
+	free_operation : REAL;
+END_VAR
+
+// Fuzzify input variable 'potenciaalmacenada': {'bajo', 'medio' , 'alto'}
+FUZZIFY stored_energy			
+	TERM low := (0, 1) (80, 1) (120,0) ; 
+	TERM medium := (80, 0) (120,1) (180,1) (220,0);
+	TERM high := (180, 0) (220, 1) (400,1);
+END_FUZZIFY
+
+// Fuzzify input variable 'precio': { 'bajo', 'medio','alto' }
+FUZZIFY price			
+	TERM low := (0, 1) (1, 1) (2,0) ;
+	TERM medium := (1,0) (2,1) (3,1) (3.5,0);
+        TERM high := (3,0) (3.5,1)(30,1);
+END_FUZZIFY
+
+// Defzzzify output variable 'operacionlibre' : {'completo', 'parcial' }
+DEFUZZIFY free_operation			
+	TERM sale := (0,1) (0.4,1) (0.6,0);
+	TERM storage := (0.4,0) (0.6,1) (1,1);
+	
+	METHOD : COG;		// Use 'Center Of Gravity' defuzzification method
+	DEFAULT := 1;		// Default value is 1 (if no rule activates defuzzifier)
+END_DEFUZZIFY
+
+// Inference rules
+RULEBLOCK No2
+	AND : MIN;	// Use 'min' for 'and'
+	ACT : MIN;	// Use 'min' activation method
+	ACCU : MAX;	// Use 'max' accumulation method
+
+	RULE 1 : IF price IS low AND stored_energy IS low THEN free_operation IS storage;
+	RULE 2 : IF price IS medium AND stored_energy IS low THEN free_operation IS storage; 
+	RULE 3 : IF price IS high AND stored_energy IS low THEN free_operation IS sale;        
+        RULE 4 : IF price IS low AND stored_energy IS medium THEN free_operation IS storage;
+        RULE 5 : IF price IS medium AND stored_energy IS medium THEN free_operation IS storage;
+        RULE 6 : IF price IS high AND stored_energy IS medium THEN free_operation IS sale;       
+        RULE 7 : IF price IS low AND stored_energy IS high THEN free_operation IS storage; 
+        RULE 8 : IF price IS medium AND stored_energy IS high THEN free_operation IS sale;        
+        RULE 9 : IF price IS high AND stored_energy IS high THEN free_operation IS sale;            
+
+END_RULEBLOCK
+
+END_FUNCTION_BLOCK
